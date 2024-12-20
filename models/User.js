@@ -15,9 +15,9 @@ userSchema.methods.isProductionUser = function() {
 
 // Static method to find active users by registration type
 userSchema.statics.findActiveByType = function(registrationType) {
-  return this.find({ 
-    registrationType, 
-    status: 'active' 
+  return this.find({
+    registrationType,
+    status: 'active'
   });
 };
 

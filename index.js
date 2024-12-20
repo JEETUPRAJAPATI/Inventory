@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.routes');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 const path = require('path');
+const morgon = require('morgan');
 
 const app = express();
 const port = process.env.PORT || 3010;
@@ -14,6 +15,7 @@ const port = process.env.PORT || 3010;
 connectDB();
 
 // Middleware
+app.use(morgon());
 app.use(express.json());
 app.use(express.static('static'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

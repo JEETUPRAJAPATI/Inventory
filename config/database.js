@@ -3,8 +3,8 @@ const logger = require('../utils/logger');
 
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/express-demo';
-    
+    const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://nidhikurmi11:kaMmPR7VMV1QESB7@cluster0.b5nllp5.mongodb.net/inventory';
+
     // Add connection options for better stability
     const options = {
       serverSelectionTimeoutMS: 5000,
@@ -22,7 +22,7 @@ const connectDB = async () => {
     } else {
       logger.error('MongoDB Connection Failed:', error);
     }
-    
+
     // Instead of exiting immediately, we'll retry the connection
     logger.info('Retrying connection in 5 seconds...');
     setTimeout(() => {

@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
   },
   operatorType: {
     type: String,
-    enum: Object.values(OPERATOR_TYPES),
+    enum: [...Object.values(OPERATOR_TYPES), ''], // Allow empty string as valid
     required: function() {
       return this.registrationType === REGISTRATION_TYPES.PRODUCTION;
     }

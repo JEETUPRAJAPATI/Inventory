@@ -6,15 +6,15 @@ const logger = require('../utils/logger');
 class AuthService {
   async register(userData) {
     const { password, ...otherData } = userData;
-    
+
     // Check if user already exists
-    const existingUser = await User.findOne({ 
+    const existingUser = await User.findOne({
       $or: [
         { email: userData.email },
         { mobileNumber: userData.mobileNumber }
       ]
     });
-    
+
     if (existingUser) {
       throw new Error('User already exists with this email or mobile number');
     }
@@ -31,35 +31,26 @@ class AuthService {
     return await user.save();
   }
 
-  async login(email, password, operatorType) {
+  async login(email, password) {
     const user = await User.findOne({ email });
-    
+
     if (!user || user.status !== 'active') {
       throw new Error('Invalid credentials or account inactive');
     }
 
     const isPasswordValid = await AuthUtils.comparePasswords(password, user.password);
-    
+
     if (!isPasswordValid) {
       throw new Error('Invalid credentials');
     }
-
-    // Check operator type for production users
-    if (user.isProductionUser()) {
-      if (!operatorType || user.operatorType !== operatorType) {
-        throw new Error('Invalid operator type');
-      }
-    }
-
     // Update last login
     user.lastLogin = new Date();
     await user.save();
 
     // Generate JWT token
-    const token = AuthUtils.generateToken({ 
+    const token = AuthUtils.generateToken({
       userId: user._id,
-      registrationType: user.registrationType,
-      operatorType: user.operatorType
+      registrationType: user.registrationType
     });
 
     return { user, token };

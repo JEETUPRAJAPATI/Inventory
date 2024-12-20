@@ -32,10 +32,10 @@ class AuthController {
         return res.status(400).json({ message: error.details[0].message });
       }
 
-      const { email, password, operatorType } = value;
-      const result = await AuthService.login(email, password, operatorType);
-      
-      res.json({ 
+      const { email, password } = value;
+      const result = await AuthService.login(email, password);
+
+      res.json({
         message: 'Login successful',
         user: result.user,
         token: result.token

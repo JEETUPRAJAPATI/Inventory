@@ -8,23 +8,30 @@ const registrationSchema = Joi.object({
   password: Joi.string().min(6).required(),
   confirmPassword: Joi.ref('password'),
   address: Joi.string().allow(''),
-  registrationType: Joi.string().valid(...Object.values(REGISTRATION_TYPES)).required(),
-  operatorType: Joi.string().valid(...Object.values(OPERATOR_TYPES))
+  registrationType: Joi.string()
+    .valid(...Object.values(REGISTRATION_TYPES))
+    .required(),
+  operatorType: Joi.string()
+    .valid(...Object.values(OPERATOR_TYPES), '') // Allow empty string as valid
     .when('registrationType', {
       is: REGISTRATION_TYPES.PRODUCTION,
-      then: Joi.required(),
-      otherwise: Joi.forbidden()
+      then: Joi.required(), // Required if `registrationType` is `production`
+      otherwise: Joi.allow('') // Allow empty for other registration types
     })
 }).with('password', 'confirmPassword');
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  operatorType: Joi.string().valid(...Object.values(OPERATOR_TYPES))
+  registrationType: Joi.string()
+    .valid(...Object.values(REGISTRATION_TYPES))
+    .required(),
+  operatorType: Joi.string()
+    .valid(...Object.values(OPERATOR_TYPES), '') // Allow empty string as valid
     .when('registrationType', {
       is: REGISTRATION_TYPES.PRODUCTION,
-      then: Joi.required(),
-      otherwise: Joi.forbidden()
+      then: Joi.required(), // Required if `registrationType` is `production`
+      otherwise: Joi.allow('') // Allow empty for other registration types
     })
 });
 
