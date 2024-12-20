@@ -7,7 +7,7 @@ const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 const path = require('path');
 const morgon = require('morgan');
-
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3010;
 
@@ -15,6 +15,7 @@ const port = process.env.PORT || 3010;
 connectDB();
 
 // Middleware
+app.use(cors());
 app.use(morgon());
 app.use(express.json());
 app.use(express.static('static'));
