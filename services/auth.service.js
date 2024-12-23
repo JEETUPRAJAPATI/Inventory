@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const AuthUtils = require('../utils/auth.utils');
-const { REGISTRATION_TYPES } = require('../config/constants');
+const { REGISTRATION_TYPES, BAG_TYPE_OPERATORS } = require('../config/constants');
 const logger = require('../utils/logger');
 
 class AuthService {
@@ -17,6 +17,14 @@ class AuthService {
 
     if (existingUser) {
       throw new Error('User already exists with this email or mobile number');
+    }
+
+    // Validate operator type against bag type for production users
+    if (userData.registrationType === REGISTRATION_TYPES.PRODUCTION) {
+      const validOperators = BAG_TYPE_OPERATORS[userData.bagType];
+      if (!validOperators.includes(userData.operatorType)) {
+        throw new Error('Invalid operator type for selected bag type');
+      }
     }
 
     // Hash password
@@ -43,6 +51,7 @@ class AuthService {
     if (!isPasswordValid) {
       throw new Error('Invalid credentials');
     }
+
     // Update last login
     user.lastLogin = new Date();
     await user.save();
