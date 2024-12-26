@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { REGISTRATION_TYPES, OPERATOR_TYPES } = require('../../config/constants');
+const { REGISTRATION_TYPES, OPERATOR_TYPES, BAG_TYPES } = require('../../config/constants');
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -35,11 +35,24 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: Object.values(REGISTRATION_TYPES)
   },
-  operatorType: {
+  bagType: {
     type: String,
-    enum: [...Object.values(OPERATOR_TYPES), ''], // Allow empty string as valid
+    enum: [...Object.values(BAG_TYPES), ''],
     required: function() {
       return this.registrationType === REGISTRATION_TYPES.PRODUCTION;
+    }
+  },
+  operatorType: {
+    type: String,
+    enum: [...Object.values(OPERATOR_TYPES), ''],
+    required: function() {
+      return this.registrationType === REGISTRATION_TYPES.PRODUCTION;
+    }
+  },
+  warehouseLocation: {
+    type: String,
+    required: function() {
+      return this.registrationType === REGISTRATION_TYPES.INVENTORY;
     }
   },
   status: {

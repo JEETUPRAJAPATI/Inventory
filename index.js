@@ -3,11 +3,14 @@ const { resolve } = require('path');
 const connectDB = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/auth.routes');
+const adminRoutes = require('./routes/admin.routes');
+const salesRoutes = require('./routes/sales.routes');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 const path = require('path');
 const morgon = require('morgan');
 const cors = require('cors');
+
 const app = express();
 const port = process.env.PORT || 3010;
 
@@ -34,7 +37,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  console.log('coolec'.mongoose.connection.readyState);
   const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
   res.json({
     status: 'ok',
@@ -44,6 +46,8 @@ app.get('/health', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/sales', salesRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

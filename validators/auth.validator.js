@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { REGISTRATION_TYPES, OPERATOR_TYPES } = require('../config/constants');
+const { REGISTRATION_TYPES, OPERATOR_TYPES, BAG_TYPES, BAG_TYPE_OPERATORS } = require('../config/constants');
 
 const registrationSchema = Joi.object({
   fullName: Joi.string().required().min(2).max(100),
@@ -11,12 +11,34 @@ const registrationSchema = Joi.object({
   registrationType: Joi.string()
     .valid(...Object.values(REGISTRATION_TYPES))
     .required(),
-  operatorType: Joi.string()
-    .valid(...Object.values(OPERATOR_TYPES), '') // Allow empty string as valid
+  bagType: Joi.string()
+    .valid(...Object.values(BAG_TYPES), '')
     .when('registrationType', {
       is: REGISTRATION_TYPES.PRODUCTION,
-      then: Joi.required(), // Required if `registrationType` is `production`
-      otherwise: Joi.allow('') // Allow empty for other registration types
+      then: Joi.required(),
+      otherwise: Joi.allow('')
+    }),
+  operatorType: Joi.string()
+    .valid(...Object.values(OPERATOR_TYPES), '')
+    .when('registrationType', {
+      is: REGISTRATION_TYPES.PRODUCTION,
+      then: Joi.required().custom((value, helpers) => {
+        const bagType = helpers.state.ancestors[0].bagType;
+        if (!bagType) return value;
+
+        const validOperators = BAG_TYPE_OPERATORS[bagType];
+        if (!validOperators.includes(value)) {
+          return helpers.error('any.invalid');
+        }
+        return value;
+      }),
+      otherwise: Joi.allow('')
+    }),
+  warehouseLocation: Joi.string()
+    .when('registrationType', {
+      is: REGISTRATION_TYPES.INVENTORY,
+      then: Joi.required(),
+      otherwise: Joi.allow('')
     })
 }).with('password', 'confirmPassword');
 
