@@ -33,6 +33,12 @@ const registrationSchema = Joi.object({
         return value;
       }),
       otherwise: Joi.allow('')
+    }),
+  warehouseLocation: Joi.string()
+    .when('registrationType', {
+      is: REGISTRATION_TYPES.INVENTORY,
+      then: Joi.required(),
+      otherwise: Joi.allow('')
     })
 }).with('password', 'confirmPassword');
 

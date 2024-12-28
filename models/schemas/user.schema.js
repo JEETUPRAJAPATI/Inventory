@@ -49,6 +49,12 @@ const userSchema = new mongoose.Schema({
       return this.registrationType === REGISTRATION_TYPES.PRODUCTION;
     }
   },
+  warehouseLocation: {
+    type: String,
+    required: function() {
+      return this.registrationType === REGISTRATION_TYPES.INVENTORY;
+    }
+  },
   status: {
     type: String,
     enum: ['active', 'inactive', 'suspended'],
