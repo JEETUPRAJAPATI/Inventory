@@ -3,6 +3,7 @@ const REGISTRATION_TYPES = {
   SALES: 'sales',
   DELIVERY: 'delivery',
   PRODUCTION: 'production',
+  PRODUCTION_MANAGER: 'production_manager',
   INVENTORY: 'inventory'
 };
 
