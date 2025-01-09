@@ -11,8 +11,16 @@ class AuthUtils {
   }
 
   static generateToken(payload) {
+    // Include all relevant user data in token
+    const tokenPayload = {
+      userId: payload.userId,
+      registrationType: payload.registrationType,
+      bagType: payload.bagType,
+      operatorType: payload.operatorType
+    };
+
     return jwt.sign(
-      payload,
+      tokenPayload,
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );

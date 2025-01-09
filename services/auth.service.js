@@ -56,11 +56,19 @@ class AuthService {
     user.lastLogin = new Date();
     await user.save();
 
-    // Generate JWT token
-    const token = AuthUtils.generateToken({
+    // Generate JWT token with additional fields for production users
+    const tokenPayload = {
       userId: user._id,
       registrationType: user.registrationType
-    });
+    };
+
+    // Add bagType and operatorType for production users
+    if (user.registrationType === REGISTRATION_TYPES.PRODUCTION) {
+      tokenPayload.bagType = user.bagType;
+      tokenPayload.operatorType = user.operatorType;
+    }
+
+    const token = AuthUtils.generateToken(tokenPayload);
 
     return { user, token };
   }
